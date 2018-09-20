@@ -1,26 +1,52 @@
 ﻿using Android.App;
 using Android.Widget;
 using Android.OS;
+using NotesApp;
+using Android.Support.V7.Widget;
+using System;
+using System.Collections.Generic;
 
 namespace NotesApp.Droid
 {
     [Activity(Label = "NotesApp", MainLauncher = true, Icon = "@mipmap/icon")]
     public class MainActivity : Activity
     {
-        int count = 1;
+        List<String> dataset = new List<String>();
 
-        protected override void OnCreate(Bundle savedInstanceState)
+        RecyclerView mRecyclerView;
+        RecyclerView.LayoutManager mLayoutManager;
+        RecyclerViewAdapter mAdapter;
+
+        protected override void OnCreate(Bundle bundle)
         {
-            base.OnCreate(savedInstanceState);
-
-            // Set our view from the "main" layout resource
+            base.OnCreate(bundle);
             SetContentView(Resource.Layout.Main);
+            mRecyclerView = FindViewById<RecyclerView>(Resource.Id.recyclerView);
 
-            // Get our button from the layout resource,
-            // and attach an event to it
-            Button button = FindViewById<Button>(Resource.Id.myButton);
+            //plug in the linear layout manager
+            mLayoutManager = new LinearLayoutManager(this);
+            mRecyclerView.SetLayoutManager(mLayoutManager);
 
-            button.Click += delegate { button.Text = $"{count++} clicks!"; };
+            //plug in the adapter:
+            this.dataset.Add("first");
+            this.dataset.Add("second");
+            this.dataset.Add("third");
+            this.dataset.Add("fourth");
+            mAdapter = new RecyclerViewAdapter(this.dataset);
+            mRecyclerView.SetAdapter(mAdapter);
+            CallApi();
+        }
+        public async void CallApi()
+        {
+            Api api = new Api();
+            List<RecyclerViewItem> response = await api.GetData();
+            this.dataset.Add("fifth");
+            this.dataset.Add("sixth");
+            foreach (RecyclerViewItem element in response)
+            {
+                this.dataset.Add(element.title);
+            }
+            this.mAdapter.NotifyDataSetChanged();
         }
     }
 }
