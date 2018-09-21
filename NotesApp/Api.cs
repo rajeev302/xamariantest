@@ -1,23 +1,14 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace NotesApp
 {
     public class Api
     {
-        //List<RecyclerViewItem> Items;
-
-        public string testSharedProject()
-        {
-            return "abc";
-        }
-
         public async Task<List<RecyclerViewItem>> GetData()
         {
             var request = new HttpRequestMessage();
@@ -31,7 +22,6 @@ namespace NotesApp
                 HttpContent content = response.Content;
                 var json = await content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<List<RecyclerViewItem>>(json);
-                //return Items;
             }
             else
                 return null;

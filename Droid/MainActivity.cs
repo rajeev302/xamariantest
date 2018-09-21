@@ -1,7 +1,5 @@
 ﻿using Android.App;
-using Android.Widget;
 using Android.OS;
-using NotesApp;
 using Android.Support.V7.Widget;
 using System;
 using System.Collections.Generic;
@@ -11,7 +9,7 @@ namespace NotesApp.Droid
     [Activity(Label = "NotesApp", MainLauncher = true, Icon = "@mipmap/icon")]
     public class MainActivity : Activity
     {
-        List<String> dataset = new List<String>();
+        List<RecyclerViewItem> dataset = new List<RecyclerViewItem>();
 
         RecyclerView mRecyclerView;
         RecyclerView.LayoutManager mLayoutManager;
@@ -28,23 +26,26 @@ namespace NotesApp.Droid
             mRecyclerView.SetLayoutManager(mLayoutManager);
 
             //plug in the adapter:
-            this.dataset.Add("first");
-            this.dataset.Add("second");
-            this.dataset.Add("third");
-            this.dataset.Add("fourth");
             mAdapter = new RecyclerViewAdapter(this.dataset);
             mRecyclerView.SetAdapter(mAdapter);
+            mAdapter.ItemClick += OnItemClick;
             CallApi();
         }
+
+        void OnItemClick(object sender, int position)
+        {
+            int photoNum = position + 1;
+            Android.Util.Log.Info("cardClicked", "on item click function called");
+            Android.Widget.Toast.MakeText(this, "This is photo number " + photoNum, Android.Widget.ToastLength.Short).Show();
+        }
+
         public async void CallApi()
         {
             Api api = new Api();
             List<RecyclerViewItem> response = await api.GetData();
-            this.dataset.Add("fifth");
-            this.dataset.Add("sixth");
             foreach (RecyclerViewItem element in response)
             {
-                this.dataset.Add(element.title);
+                this.dataset.Add(element);
             }
             this.mAdapter.NotifyDataSetChanged();
         }
