@@ -6,8 +6,7 @@ namespace NotesApp.iOS
 {
     public partial class ViewController : UIViewController
     {
-        int count = 1;
-
+        public string[] list = {"A", "B", "C", "D"};
         public ViewController(IntPtr handle) : base(handle)
         {
         }
@@ -17,12 +16,7 @@ namespace NotesApp.iOS
             base.ViewDidLoad();
 
             // Perform any additional setup after loading the view, typically from a nib.
-            Button.AccessibilityIdentifier = "myButton";
-            Button.TouchUpInside += delegate
-            {
-                var title = string.Format("{0} clicks!", count++);
-                Button.SetTitle(title, UIControlState.Normal);
-            };
+            notesTableView.Source = new NotesTableViewSource(list);
         }
 
         public override void DidReceiveMemoryWarning()
